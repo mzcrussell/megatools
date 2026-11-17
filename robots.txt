@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# After connecting your custom domain, update and uncomment your sitemap URL:
+# Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
