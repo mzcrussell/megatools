@@ -92,7 +92,7 @@
     .tool-card strong { display:block; font-size:.98rem; }
     .tool-card small { display:block; color:var(--muted); margin-top:5px; line-height:1.45; }
     .tool-section { scroll-margin-top:95px; margin:24px 0; }
-    .panel { display:none; background:white; border:1px solid var(--line); border-radius:var(--radius); padding:clamp(20px,4vw,32px); box-shadow:var(--shadow); }
+    .panel { scroll-margin-top:95px; display:none; background:white; border:1px solid var(--line); border-radius:var(--radius); padding:clamp(20px,4vw,32px); box-shadow:var(--shadow); }
     .panel.active { display:block; }
     .panel h2 { margin:0 0 5px; font-size:1.5rem; letter-spacing:-.5px; }
     .panel-intro { margin:0 0 22px; color:var(--muted); }
@@ -508,7 +508,8 @@ Describe your impact and achievements."></textarea></div><div class="field full"
     document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + name));
     $("activeHeading").textContent = toolNames[name][0];
     $("activeSubheading").textContent = toolNames[name][1];
-    $("tools").scrollIntoView({behavior:"smooth", block:"start"});
+    const activePanel = $("panel-" + name);
+    if (activePanel) activePanel.scrollIntoView({behavior:"smooth", block:"start"});
     document.querySelectorAll(".tool-card").forEach(card => card.setAttribute("aria-pressed", String(card.dataset.tool === name)));
   }
   document.querySelectorAll(".tool-card").forEach(card => card.addEventListener("click", () => showTool(card.dataset.tool)));
