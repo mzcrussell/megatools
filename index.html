@@ -233,7 +233,7 @@
       <button class="tool-card" data-tool="emi"><span class="tool-icon">🏦</span><strong>Loan EMI Calculator</strong><small>Estimate monthly loan payments.</small></button>
       <button class="tool-card" data-tool="typing"><span class="tool-icon">⌨️</span><strong>Typing Speed Test</strong><small>Test typing speed and accuracy.</small></button>
 
-      <button class="tool-card" data-tool="bgremove"><span class="tool-icon">🪄</span><strong>Background Eraser</strong><small>Remove a solid-color image background in your browser.</small></button>
+      <button class="tool-card" data-tool="bgremove"><span class="tool-icon">🪄</span><strong>AI Background Remover</strong><small>Remove image backgrounds with on-device AI.</small></button>
       <button class="tool-card" data-tool="pdfkit"><span class="tool-icon">📄</span><strong>PDF Toolkit</strong><small>Merge PDFs, extract pages and rotate documents.</small></button>
       <button class="tool-card" data-tool="resume"><span class="tool-icon">📑</span><strong>Resume Builder</strong><small>Create a clean resume and print it to PDF.</small></button>
       <button class="tool-card" data-tool="socialsize"><span class="tool-icon">📱</span><strong>Social Media Resizer</strong><small>Resize images for common social media formats.</small></button>
@@ -382,7 +382,12 @@
     <section class="panel" id="panel-typing"><h2>Typing Speed Test</h2><p class="panel-intro">Type the sample text below for 60 seconds. Your speed and accuracy will be calculated when time ends.</p><div class="result" id="typingPrompt" style="font-size:1.05rem;line-height:1.8">Good typing skills help you work faster and communicate clearly. Practice a little every day to improve your speed and accuracy.</div><div class="field" style="margin-top:15px"><label for="typingInput">Start typing here</label><textarea id="typingInput" placeholder="Click Start test, then type the sample text here..." disabled></textarea></div><div class="stats"><div class="stat"><strong id="typingTime">60</strong><span>Seconds left</span></div><div class="stat"><strong id="typingWpm">0</strong><span>Words per minute</span></div><div class="stat"><strong id="typingAccuracy">100%</strong><span>Accuracy</span></div><div class="stat"><strong id="typingChars">0</strong><span>Correct characters</span></div></div><div class="actions"><button class="btn" id="startTyping">Start test</button><button class="btn secondary" id="resetTyping">Reset</button></div><p class="notice">English typing sample for now. WPM is estimated from correctly typed characters divided by five.</p></section>
 
 
-    <section class="panel" id="panel-bgremove"><h2>Solid-Color Background Eraser</h2><p class="panel-intro">Make a near-uniform background transparent. This is a simple browser-based color-removal tool, not an AI subject detector; it works best on product photos with plain backgrounds.</p><div class="field"><label for="bgFile">Choose image</label><input id="bgFile" type="file" accept="image/*"></div><div class="form-grid" style="margin-top:14px"><div class="field"><label for="bgTolerance">Color tolerance: <span id="bgTolLabel">35</span></label><input id="bgTolerance" type="range" min="5" max="120" value="35"></div><div class="field"><label for="bgSample">Background sample</label><select id="bgSample"><option value="corner">Top-left corner</option><option value="center">Center pixel</option></select></div></div><div class="actions"><button class="btn" id="bgRemoveBtn">Remove background</button><button class="btn secondary" id="bgDownload" disabled>Download transparent PNG</button></div><div class="tool-output" id="bgPreview"></div><canvas id="bgCanvas" class="hidden"></canvas></section>
+    <section class="panel" id="panel-bgremove"><h2>AI Background Remover</h2><p class="panel-intro">Automatically detect the main subject (people, products, animals and everyday objects) and make the background transparent. Your image is processed on this device and is not uploaded to AllToolZone.</p>
+      <div class="field"><label for="bgFile">Choose a photo</label><input id="bgFile" type="file" accept="image/png,image/jpeg,image/webp,image/bmp"></div>
+      <div class="actions"><button class="btn" id="bgRemoveBtn" disabled>Remove background with AI</button><button class="btn secondary" id="bgDownload" disabled>Download transparent PNG</button></div>
+      <p class="notice" id="bgStatus" role="status" aria-live="polite">Choose an image to get started. The AI model downloads the first time you use this tool.</p>
+      <div id="bgPreviewWrap" class="result" style="display:none"><h3 style="margin:0 0 10px">Transparent preview</h3><canvas id="bgCanvas" style="display:block;width:100%;height:auto;max-height:650px;object-fit:contain;border-radius:10px;background-color:#fff;background-image:linear-gradient(45deg,#e9edf4 25%,transparent 25%),linear-gradient(-45deg,#e9edf4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9edf4 75%),linear-gradient(-45deg,transparent 75%,#e9edf4 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0"></canvas></div>
+      <p class="notice">Best results depend on the photo. Fine hair, transparent glass, crowded scenes and some product edges may need further refinement. Very large images may take longer on older phones.</p></section>
 
     <section class="panel" id="panel-pdfkit"><h2>PDF Toolkit</h2><p class="panel-intro">Merge PDF files, extract a page range, or rotate every page. Files are processed in your browser with PDF-Lib.</p><div class="field"><label for="pdfFiles">Select PDF file(s)</label><input id="pdfFiles" type="file" accept="application/pdf,.pdf" multiple></div><div class="form-grid" style="margin-top:14px"><div class="field"><label for="pdfAction">Action</label><select id="pdfAction"><option value="merge">Merge selected PDFs</option><option value="extract">Extract pages from first PDF</option><option value="rotate">Rotate all pages in first PDF</option></select></div><div class="field"><label for="pdfPages">Page range (for extract, e.g. 1-3,5)</label><input id="pdfPages" placeholder="1-3,5"></div><div class="field"><label for="pdfRotation">Rotation (for rotate)</label><select id="pdfRotation"><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">270° clockwise</option></select></div></div><div class="actions"><button class="btn" id="runPdf">Process PDF</button></div><p class="notice" id="pdfStatus" aria-live="polite">Select one or more PDF files to begin. Password-protected PDFs may not work.</p><div class="inline-note">This version does not promise aggressive PDF compression; image-heavy PDF compression requires a dedicated encoder.</div></section>
 
@@ -485,7 +490,7 @@ Describe your impact and achievements."></textarea></div><div class="field full"
     vat:["VAT Calculator","Add VAT to an amount or extract included VAT."],
     emi:["Loan EMI Calculator","Estimate monthly loan installments and interest."],
     typing:["Typing Speed Test","Test your typing speed and accuracy in 60 seconds."],
-    bgremove:["Background Eraser","Remove a plain-color background in your browser."],
+    bgremove:["AI Background Remover","Automatically isolate the main subject with on-device AI."],
     pdfkit:["PDF Toolkit","Merge, extract and rotate PDF pages."],
     resume:["Resume Builder","Create a clean resume and print it to PDF."],
     socialsize:["Social Media Image Resizer","Resize images for common social formats."],
@@ -903,10 +908,7 @@ Describe your impact and achievements."></textarea></div><div class="field full"
   const byId = id => document.getElementById(id);
   function downloadBlob(blob, filename){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);}
   function loadImageFile(file){return new Promise((resolve,reject)=>{const u=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(u);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(u);reject(Error("Could not read this image."))};img.src=u;});}
-  // Solid-color background removal (not AI segmentation)
-  let bgBlob=null;byId("bgTolerance").addEventListener("input",()=>byId("bgTolLabel").textContent=byId("bgTolerance").value);
-  byId("bgRemoveBtn").addEventListener("click",async()=>{try{const f=byId("bgFile").files[0];if(!f)throw Error("Choose an image first.");const im=await loadImageFile(f),c=byId("bgCanvas"),ctx=c.getContext("2d",{willReadFrequently:true});c.width=im.naturalWidth;c.height=im.naturalHeight;ctx.drawImage(im,0,0);const d=ctx.getImageData(0,0,c.width,c.height),p=d.data;const sx=byId("bgSample").value==="center"?Math.floor((c.height/2)*c.width+c.width/2):0,si=sx*4,base=[p[si],p[si+1],p[si+2]],tol=Number(byId("bgTolerance").value)*Math.sqrt(3);let removed=0;for(let i=0;i<p.length;i+=4){const dist=Math.hypot(p[i]-base[0],p[i+1]-base[1],p[i+2]-base[2]);if(dist<=tol){p[i+3]=0;removed++;}}ctx.putImageData(d,0,0);c.toBlob(b=>{bgBlob=b;byId("bgPreview").innerHTML="<img alt='Transparent background preview' src='"+URL.createObjectURL(b)+"'>";byId("bgDownload").disabled=false;},"image/png");}catch(e){alert(e.message)}});
-  byId("bgDownload").addEventListener("click",()=>{if(bgBlob)downloadBlob(bgBlob,"background-removed.png")});
+  // AI background removal is initialized in the module script below.
   // PDF operations
   byId("runPdf").addEventListener("click",async()=>{const status=byId("pdfStatus");try{if(!window.PDFLib)throw Error("PDF library did not load. Refresh and try again.");const files=[...byId("pdfFiles").files];if(!files.length)throw Error("Choose at least one PDF.");const {PDFDocument, degrees}=PDFLib,action=byId("pdfAction").value;let out;if(action==="merge"){out=await PDFDocument.create();for(const f of files){const doc=await PDFDocument.load(await f.arrayBuffer());const pages=await out.copyPages(doc,doc.getPageIndices());pages.forEach(p=>out.addPage(p));}}else{const doc=await PDFDocument.load(await files[0].arrayBuffer());out=await PDFDocument.create();if(action==="rotate"){const angle=Number(byId("pdfRotation").value);const pages=await out.copyPages(doc,doc.getPageIndices());pages.forEach(p=>{p.setRotation(degrees((p.getRotation().angle+angle)%360));out.addPage(p)});}else{const indices=new Set();const raw=byId("pdfPages").value.trim();if(!raw)throw Error("Enter page numbers or ranges, e.g. 1-3,5.");raw.split(",").forEach(part=>{const bits=part.trim().split("-").map(Number);if(bits.some(n=>!Number.isInteger(n)||n<1))throw Error("Invalid page range.");const a=bits[0],b=bits[1]||a;if(b<a||b>doc.getPageCount())throw Error("Page range is outside this PDF.");for(let n=a;n<=b;n++)indices.add(n-1)});const pages=await out.copyPages(doc,[...indices].sort((a,b)=>a-b));pages.forEach(p=>out.addPage(p));}}const bytes=await out.save();downloadBlob(new Blob([bytes],{type:"application/pdf"}),"alltoolzone-output.pdf");status.textContent="Done — your PDF download should begin.";}catch(e){status.textContent=e.message;}});
   // Resume builder
@@ -941,6 +943,145 @@ Describe your impact and achievements."></textarea></div><div class="field full"
   function routeTool(){const m=location.hash.match(/tool=([a-z0-9-]+)/i);if(m&&toolNames[m[1]])showTool(m[1]);}
   window.addEventListener("hashchange",routeTool);routeTool();
 })();
+</script>
+<script type="module">
+  // Browser-optimised BiRefNet Lite export. The stock full-size BiRefNet
+  // ONNX graph can create very large intermediate tensors in browsers.
+  import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/+esm';
+
+  const fileInput = document.getElementById('bgFile');
+  const removeBtn = document.getElementById('bgRemoveBtn');
+  const downloadBtn = document.getElementById('bgDownload');
+  const statusEl = document.getElementById('bgStatus');
+  const canvas = document.getElementById('bgCanvas');
+  const previewWrap = document.getElementById('bgPreviewWrap');
+
+  const MODEL_URL = 'https://huggingface.co/clevr-tools/birefnet-lite-web/resolve/main/birefnet_lite_512_fp16w.onnx';
+  const MODEL_SIZE_LABEL = 'about 101 MB';
+  const MODEL_SIZE = 512;
+  let sourceFile = null, resultBlob = null, sessionPromise = null, busy = false;
+
+  ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
+  ort.env.wasm.numThreads = Math.min(4, Math.max(1, navigator.hardwareConcurrency || 1));
+
+  function setStatus(message) { statusEl.textContent = message; }
+
+  function getSession() {
+    if (!sessionPromise) {
+      sessionPromise = (async () => {
+        setStatus(`Downloading browser-optimised AI model (${MODEL_SIZE_LABEL}) for first use…`);
+        const response = await fetch(MODEL_URL);
+        if (!response.ok) throw new Error(`AI model download failed (HTTP ${response.status}). Please retry.`);
+        const bytes = await response.arrayBuffer();
+        if (bytes.byteLength < 1000000) throw new Error('AI model download was incomplete. Please refresh and retry.');
+        setStatus('Loading AI model into your browser…');
+        return await ort.InferenceSession.create(bytes, {
+          executionProviders: ['wasm'],
+          graphOptimizationLevel: 'all'
+        });
+      })().catch(error => { sessionPromise = null; throw error; });
+    }
+    return sessionPromise;
+  }
+
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file), image = new Image();
+      image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
+      image.onerror = () => { URL.revokeObjectURL(url); reject(new Error('The selected image could not be opened.')); };
+      image.src = url;
+    });
+  }
+
+  function makeInputTensor(image) {
+    const inputCanvas = document.createElement('canvas');
+    inputCanvas.width = MODEL_SIZE; inputCanvas.height = MODEL_SIZE;
+    const ctx = inputCanvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(image, 0, 0, MODEL_SIZE, MODEL_SIZE);
+    const rgba = ctx.getImageData(0, 0, MODEL_SIZE, MODEL_SIZE).data;
+    const plane = MODEL_SIZE * MODEL_SIZE;
+    const data = new Float32Array(3 * plane);
+    const mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225];
+    for (let i = 0; i < plane; i++) {
+      data[i] = (rgba[i * 4] / 255 - mean[0]) / std[0];
+      data[plane + i] = (rgba[i * 4 + 1] / 255 - mean[1]) / std[1];
+      data[2 * plane + i] = (rgba[i * 4 + 2] / 255 - mean[2]) / std[2];
+    }
+    return new ort.Tensor('float32', data, [1, 3, MODEL_SIZE, MODEL_SIZE]);
+  }
+
+  function makeMaskCanvas(outputTensor) {
+    const values = outputTensor.data;
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = MODEL_SIZE; maskCanvas.height = MODEL_SIZE;
+    const ctx = maskCanvas.getContext('2d');
+    const imageData = ctx.createImageData(MODEL_SIZE, MODEL_SIZE);
+    for (let i = 0; i < MODEL_SIZE * MODEL_SIZE; i++) {
+      const logit = Math.max(-30, Math.min(30, Number(values[i])));
+      const alpha = Math.round((1 / (1 + Math.exp(-logit))) * 255);
+      const j = i * 4;
+      imageData.data[j] = 255; imageData.data[j + 1] = 255;
+      imageData.data[j + 2] = 255; imageData.data[j + 3] = alpha;
+    }
+    ctx.putImageData(imageData, 0, 0);
+    return maskCanvas;
+  }
+
+  fileInput.addEventListener('change', () => {
+    sourceFile = fileInput.files?.[0] || null;
+    resultBlob = null; downloadBtn.disabled = true; previewWrap.style.display = 'none';
+    removeBtn.disabled = !sourceFile;
+    setStatus(sourceFile ? `Selected: ${sourceFile.name}. Ready to process.` : 'Choose an image to get started.');
+  });
+
+  removeBtn.addEventListener('click', async () => {
+    if (!sourceFile || busy) return;
+    busy = true; removeBtn.disabled = true; downloadBtn.disabled = true;
+    try {
+      if (!sourceFile.type.startsWith('image/')) throw new Error('Please choose a valid image file.');
+      if (sourceFile.size > 20 * 1024 * 1024) throw new Error('Please choose an image smaller than 20 MB.');
+      setStatus('Preparing your image…');
+      const image = await loadImage(sourceFile);
+      if (image.naturalWidth * image.naturalHeight > 24000000) throw new Error('Please resize this image to 24 megapixels or less.');
+
+      const session = await getSession();
+      setStatus('AI is detecting the subject. Slower computers may take longer…');
+      const outputs = await session.run({ [session.inputNames[0]]: makeInputTensor(image) });
+      const maskCanvas = makeMaskCanvas(outputs[session.outputNames[0]]);
+
+      canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const matte = document.createElement('canvas');
+      matte.width = canvas.width; matte.height = canvas.height;
+      const matteCtx = matte.getContext('2d', { willReadFrequently: true });
+      matteCtx.drawImage(maskCanvas, 0, 0, matte.width, matte.height);
+      const alpha = matteCtx.getImageData(0, 0, matte.width, matte.height).data;
+      for (let i = 0; i < original.data.length; i += 4) {
+        original.data[i + 3] = Math.round(original.data[i + 3] * alpha[i] / 255);
+      }
+      ctx.putImageData(original, 0, 0);
+      resultBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!resultBlob) throw new Error('PNG export failed. Please try another image.');
+      previewWrap.style.display = 'block'; downloadBtn.disabled = false;
+      setStatus(`Done! ${canvas.width} × ${canvas.height} transparent PNG is ready. Your photo stayed on this device.`);
+    } catch (error) {
+      console.error('Browser-optimised BiRefNet error:', error);
+      setStatus(`Could not remove the background: ${error?.message || String(error)}. If this repeats, share the browser Console error.`);
+    } finally {
+      busy = false; removeBtn.disabled = !sourceFile;
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if (!resultBlob) return;
+    const url = URL.createObjectURL(resultBlob), link = document.createElement('a');
+    link.href = url; link.download = 'alltoolzone-background-removed.png';
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  });
 </script>
 </body>
 </html>

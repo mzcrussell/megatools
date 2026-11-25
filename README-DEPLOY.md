@@ -2,7 +2,7 @@
 
 ## What's included
 - Updated `index.html`, based on the previous Version 3 project.
-- 10 new tools: solid-color background eraser, PDF merge/extract/rotate, resume builder, social image resizer, invoice generator, HEIC converter, barcode generator, browser text-to-speech, JSON/CSV converter and password strength checker.
+- 10 new tools: AI background remover (ISNet general-use model), PDF merge/extract/rotate, resume builder, social image resizer, invoice generator, HEIC converter, barcode generator, browser text-to-speech, JSON/CSV converter and password strength checker.
 - 10 SEO landing pages under `tools/` with distinct titles, descriptions, canonical URLs, FAQs and links to the corresponding tool.
 - `robots.txt` and `sitemap-template.xml`.
 
@@ -27,7 +27,7 @@
 No tracking ID has been invented or embedded. Create a GA4 property, copy your Measurement ID (`G-XXXXXXXXXX`), then add Google's official tag only after reviewing your privacy/cookie notice and applicable consent requirements.
 
 ## Important technical notes
-- The background eraser removes a sampled near-uniform color; it is not AI background segmentation.
+- The AI background remover uses an on-device general-use segmentation model. First use downloads the model; results vary by photo, and fine edges or complex scenes may need refinement.
 - PDF tools merge, extract and rotate. They do not promise aggressive image compression. Password-protected PDFs may fail.
 - Text-to-speech uses voices available from the browser/OS and does not export MP3.
 - HEIC conversion depends on the browser and external HEIC conversion library.
@@ -37,3 +37,7 @@ No tracking ID has been invented or embedded. Create a GA4 property, copy your M
 
 ## Contact placeholder
 The old V3 file contained `YOUR-EMAIL@example.com`. Replace that placeholder in the contact section with an email address you actively monitor before launch.
+
+
+## AI Background Remover model attribution
+The browser-based background remover uses the ISNet general-use ONNX model packaged by Ko033 for Transformers.js. Model source and license details: https://huggingface.co/Ko033/isnet-general-use-onnx (Apache-2.0; see the model card and upstream attribution). The model is downloaded on first use and cached by the browser. Uploaded photos are processed locally in the browser.
