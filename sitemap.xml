@@ -1,5 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://alltoolzone.com/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/background-eraser/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/barcode-generator/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/heic-to-jpg/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/invoice-generator/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/json-csv-converter/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/password-strength-checker/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/pdf-toolkit/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/resume-builder/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/social-media-resizer/</loc>
+  </url>
+  <url>
+    <loc>https://alltoolzone.com/tools/text-to-speech/</loc>
   </url>
 </urlset>
