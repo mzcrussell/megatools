@@ -1083,5 +1083,488 @@ Describe your impact and achievements."></textarea></div><div class="field full"
     setTimeout(() => URL.revokeObjectURL(url), 1500);
   });
 </script>
+  
+<script>
+(() => {
+  function initInvoiceV2() {
+    const panel = document.getElementById("panel-invoice");
+    if (!panel) return;
+
+    panel.innerHTML = `
+      <h2>Professional Invoice Generator</h2>
+      <p class="panel-intro">Create professional invoices with discounts, tax, multiple items and your company logo.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Business / Seller Name</label>
+          <input id="iv2Seller" placeholder="Your Company Name">
+        </div>
+        <div class="field">
+          <label>Company Logo (optional)</label>
+          <input id="iv2Logo" type="file" accept="image/png,image/jpeg,image/webp">
+        </div>
+        <div class="field">
+          <label>Seller Address / Contact</label>
+          <textarea id="iv2Address" placeholder="Address, phone, email"></textarea>
+        </div>
+        <div class="field">
+          <label>Bill To / Customer</label>
+          <textarea id="iv2Client" placeholder="Customer name and address"></textarea>
+        </div>
+        <div class="field">
+          <label>Invoice Number</label>
+          <input id="iv2Number" value="INV-001">
+        </div>
+        <div class="field">
+          <label>Invoice Date</label>
+          <input id="iv2Date" type="date">
+        </div>
+        <div class="field">
+          <label>Payment Due Date</label>
+          <input id="iv2Due" type="date">
+        </div>
+        <div class="field">
+          <label>Currency</label>
+          <select id="iv2Currency">
+            <option>USD</option>
+            <option>BDT</option>
+            <option>EUR</option>
+            <option>GBP</option>
+            <option>INR</option>
+            <option>AED</option>
+            <option>SAR</option>
+            <option>CAD</option>
+            <option>AUD</option>
+            <option>JPY</option>
+            <option>SGD</option>
+            <option>MYR</option>
+            <option>PKR</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>Products / Services</h3>
+      <div id="iv2Items"></div>
+
+      <button type="button" class="btn secondary" id="iv2Add">
+        + Add Item
+      </button>
+
+      <div class="form-grid" style="margin-top:20px">
+        <div class="field">
+          <label>Discount Type</label>
+          <select id="iv2DiscountType">
+            <option value="percent">Percentage (%)</option>
+            <option value="fixed">Fixed Amount</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Discount</label>
+          <input id="iv2Discount" type="number" min="0" step="any" value="0">
+        </div>
+        <div class="field">
+          <label>Tax (%)</label>
+          <input id="iv2Tax" type="number" min="0" step="any" value="0">
+        </div>
+        <div class="field">
+          <label>Payment Method</label>
+          <input id="iv2Payment" placeholder="Bank transfer, cash, PayPal...">
+        </div>
+        <div class="field full">
+          <label>Additional Notes</label>
+          <textarea id="iv2Notes">Thank you for your business!</textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="iv2Update">Update Invoice</button>
+        <button class="btn teal" id="iv2Print">Print / Save PDF</button>
+      </div>
+
+      <p class="notice">Tax is calculated after discount. Check your local invoice and tax requirements.</p>
+
+      <div id="invoicePreview" class="preview-paper"></div>
+    `;
+
+    const style = document.createElement("style");
+
+    style.textContent = `
+      #panel-invoice .iv2-item {
+        display:grid;
+        grid-template-columns:2fr 1fr 1fr auto;
+        gap:10px;
+        align-items:end;
+        background:#f8f9fc;
+        padding:14px;
+        border-radius:12px;
+        margin-bottom:12px;
+        border:1px solid #e6eaf0;
+      }
+      #panel-invoice .iv2-remove {
+        background:#fee2e2;
+        color:#b91c1c;
+      }
+      #invoicePreview {
+        padding:clamp(15px,4vw,35px);
+        overflow-wrap:anywhere;
+      }
+      #invoicePreview .iv2-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        flex-wrap:wrap;
+        gap:18px;
+        border-bottom:3px solid #6258e8;
+        padding-bottom:20px;
+      }
+      #invoicePreview .iv2-seller {
+        font-size:clamp(24px,4vw,34px);
+        font-weight:850;
+        line-height:1.2;
+        color:#5146d4;
+        margin:8px 0;
+      }
+      #invoicePreview .iv2-logo {
+        max-width:150px;
+        max-height:90px;
+        object-fit:contain;
+      }
+      #invoicePreview .iv2-meta {
+        text-align:right;
+      }
+      #invoicePreview .iv2-table {
+        width:100%;
+        border-collapse:collapse;
+        margin:22px 0;
+        font-size:13px;
+      }
+      #invoicePreview .iv2-table th {
+        background:#6258e8;
+        color:white;
+      }
+      #invoicePreview .iv2-table th,
+      #invoicePreview .iv2-table td {
+        padding:10px 6px;
+        border-bottom:1px solid #e6eaf0;
+        text-align:right;
+      }
+      #invoicePreview .iv2-table th:first-child,
+      #invoicePreview .iv2-table td:first-child {
+        text-align:left;
+      }
+      #invoicePreview .iv2-summary {
+        max-width:320px;
+        margin-left:auto;
+      }
+      #invoicePreview .iv2-total-row {
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        padding:8px 0;
+      }
+      #invoicePreview .iv2-grand {
+        background:#6258e8;
+        color:white;
+        padding:14px;
+        border-radius:8px;
+        font-size:18px;
+        font-weight:800;
+      }
+      #invoicePreview .iv2-multiline {
+        white-space:pre-wrap;
+      }
+      @media(max-width:620px) {
+        #panel-invoice .iv2-item {
+          grid-template-columns:1fr 1fr;
+        }
+        #panel-invoice .iv2-desc-field {
+          grid-column:1/-1;
+        }
+        #invoicePreview .iv2-meta {
+          text-align:left;
+        }
+      }
+      @media print {
+        body[data-print-target="invoice"] .site-header,
+        body[data-print-target="invoice"] .hero,
+        body[data-print-target="invoice"] .footer,
+        body[data-print-target="invoice"] .ad-slot,
+        body[data-print-target="invoice"] .info-section,
+        body[data-print-target="invoice"] .tool-grid,
+        body[data-print-target="invoice"] .section-head,
+        body[data-print-target="invoice"] .panel:not(#panel-invoice),
+        body[data-print-target="invoice"] #panel-invoice > :not(#invoicePreview) {
+          display:none !important;
+        }
+        body[data-print-target="invoice"] #panel-invoice {
+          display:block !important;
+          padding:0;
+          border:0;
+          box-shadow:none;
+        }
+        body[data-print-target="invoice"] #invoicePreview {
+          position:static !important;
+          width:100%;
+          margin:0;
+          padding:10px;
+          border:0;
+          print-color-adjust:exact;
+          -webkit-print-color-adjust:exact;
+        }
+        #invoicePreview tr {
+          break-inside:avoid;
+        }
+        #invoicePreview .iv2-summary {
+          break-inside:avoid;
+        }
+        #invoicePreview thead {
+          display:table-header-group;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+
+    const $ = id => document.getElementById(id);
+    const val = id => $(id).value.trim();
+
+    const esc = value => String(value).replace(
+      /[&<>"']/g,
+      c => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+      })[c]
+    );
+
+    const positive = value => {
+      const n = Number(value);
+      return Number.isFinite(n) ? Math.max(0,n) : 0;
+    };
+
+    let logo = "";
+    let logoRequest = 0;
+
+    const today = new Date();
+    $("iv2Date").value =
+      today.getFullYear() + "-" +
+      String(today.getMonth()+1).padStart(2,"0") + "-" +
+      String(today.getDate()).padStart(2,"0");
+
+    function addItem(desc="",qty=1,rate=100) {
+      const row = document.createElement("div");
+      row.className = "iv2-item";
+
+      row.innerHTML = `
+        <div class="field iv2-desc-field">
+          <label>Description</label>
+          <input class="iv2-desc" placeholder="Product or service">
+        </div>
+        <div class="field">
+          <label>Quantity</label>
+          <input class="iv2-qty" type="number" min="0" step="any">
+        </div>
+        <div class="field">
+          <label>Unit Price</label>
+          <input class="iv2-rate" type="number" min="0" step="any">
+        </div>
+        <button type="button" class="btn iv2-remove">Remove</button>
+      `;
+
+      row.querySelector(".iv2-desc").value = desc;
+      row.querySelector(".iv2-qty").value = qty;
+      row.querySelector(".iv2-rate").value = rate;
+
+      row.querySelector(".iv2-remove").onclick = () => {
+        row.remove();
+        if (!$("iv2Items").children.length) {
+          addItem("",1,0);
+        }
+        update();
+      };
+
+      $("iv2Items").appendChild(row);
+      update();
+    }
+
+    function update() {
+      const currency = val("iv2Currency");
+      const digits = currency === "JPY" ? 0 : 2;
+      const factor = 10 ** digits;
+
+      const round = n =>
+        Math.round((n + Number.EPSILON) * factor) / factor;
+
+      const money = n =>
+        currency + " " + n.toLocaleString("en-US",{
+          minimumFractionDigits:digits,
+          maximumFractionDigits:digits
+        });
+
+      let subtotal = 0;
+      let rows = "";
+
+      $("iv2Items").querySelectorAll(".iv2-item").forEach(row => {
+        const desc = row.querySelector(".iv2-desc").value;
+        const qty = positive(row.querySelector(".iv2-qty").value);
+        const rate = positive(row.querySelector(".iv2-rate").value);
+        const amount = round(qty * rate);
+
+        subtotal += amount;
+
+        rows += `
+          <tr>
+            <td>${esc(desc || "Product / Service")}</td>
+            <td>${qty}</td>
+            <td>${money(rate)}</td>
+            <td>${money(amount)}</td>
+          </tr>
+        `;
+      });
+
+      subtotal = round(subtotal);
+
+      const discountValue = positive(val("iv2Discount"));
+      const isPercent = val("iv2DiscountType") === "percent";
+
+      const discount = round(Math.min(
+        subtotal,
+        isPercent
+          ? subtotal * Math.min(discountValue,100) / 100
+          : discountValue
+      ));
+
+      const taxable = round(subtotal - discount);
+      const taxRate = positive(val("iv2Tax"));
+      const tax = round(taxable * taxRate / 100);
+      const total = round(taxable + tax);
+
+      $("invoicePreview").innerHTML = `
+        <div class="iv2-header">
+          <div style="flex:1;min-width:180px">
+            ${logo ? `<img class="iv2-logo" src="${esc(logo)}" alt="Company logo">` : ""}
+            <div class="iv2-seller">${esc(val("iv2Seller") || "Your Company Name")}</div>
+            <div class="iv2-multiline muted">${esc(val("iv2Address"))}</div>
+          </div>
+          <div class="iv2-meta">
+            <h2 style="font-size:30px">INVOICE</h2>
+            <strong>${esc(val("iv2Number"))}</strong>
+            <div>Date: ${esc(val("iv2Date"))}</div>
+            ${val("iv2Due") ? `<div>Due: ${esc(val("iv2Due"))}</div>` : ""}
+          </div>
+        </div>
+
+        <div style="margin-top:22px">
+          <small class="muted">BILL TO</small>
+          <div class="iv2-multiline" style="font-weight:700">${esc(val("iv2Client") || "Customer Name")}</div>
+        </div>
+
+        <table class="iv2-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+
+        <div class="iv2-summary">
+          <div class="iv2-total-row">
+            <span>Subtotal</span>
+            <strong>${money(subtotal)}</strong>
+          </div>
+          <div class="iv2-total-row">
+            <span>Discount ${isPercent ? "(" + Math.min(discountValue,100) + "%)" : ""}</span>
+            <strong style="color:#15803d">− ${money(discount)}</strong>
+          </div>
+          <div class="iv2-total-row">
+            <span>Tax (${taxRate}%)</span>
+            <strong>${money(tax)}</strong>
+          </div>
+          <div class="iv2-total-row iv2-grand">
+            <span>Total Due</span>
+            <span>${money(total)}</span>
+          </div>
+        </div>
+
+        ${val("iv2Payment") ? `
+          <div style="margin-top:25px">
+            <strong>Payment Method</strong>
+            <div class="iv2-multiline">${esc(val("iv2Payment"))}</div>
+          </div>
+        ` : ""}
+
+        <div class="iv2-multiline" style="margin-top:30px;border-top:1px solid #ddd;padding-top:15px;color:#667085">
+          ${esc(val("iv2Notes"))}
+        </div>
+      `;
+    }
+
+    $("iv2Logo").addEventListener("change", event => {
+      const request = ++logoRequest;
+      const file = event.target.files[0];
+
+      logo = "";
+      update();
+
+      if (!file) return;
+
+      if (!["image/png","image/jpeg","image/webp"].includes(file.type)
+          || file.size > 5 * 1024 * 1024) {
+        alert("Choose a PNG, JPG or WebP logo under 5 MB.");
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (request !== logoRequest) return;
+        logo = reader.result;
+        update();
+      };
+
+      reader.onerror = () => {
+        if (request === logoRequest) {
+          alert("Could not read the logo.");
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    panel.addEventListener("input",update);
+    panel.addEventListener("change",update);
+
+    $("iv2Add").onclick = () => addItem("",1,0);
+    $("iv2Update").onclick = update;
+
+    $("iv2Print").onclick = () => {
+      update();
+      document.body.dataset.printTarget = "invoice";
+      window.print();
+    };
+
+    window.addEventListener("afterprint",() => {
+      if (document.body.dataset.printTarget === "invoice") {
+        delete document.body.dataset.printTarget;
+      }
+    });
+
+    addItem();
+  }
+
+  if (document.readyState === "complete") {
+    initInvoiceV2();
+  } else {
+    window.addEventListener("load",initInvoiceV2,{once:true});
+  }
+})();
+</script>
 </body>
 </html>
