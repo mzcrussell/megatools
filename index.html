@@ -1566,5 +1566,487 @@ Describe your impact and achievements."></textarea></div><div class="field full"
   }
 })();
 </script>
+  
+<script>
+(function () {
+  "use strict";
+
+  function initConverterV2() {
+    const panel = document.getElementById("panel-jsoncsv");
+    if (!panel || panel.dataset.version === "2") return;
+    panel.dataset.version = "2";
+
+    panel.innerHTML = `
+      <h2>JSON & CSV Converter Pro</h2>
+      <p class="panel-intro">
+        Convert, validate and format JSON and CSV files.
+        All processing happens locally in your browser.
+      </p>
+
+      <style>
+        #panel-jsoncsv .jc-grid {
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:16px;
+          margin-top:20px;
+        }
+        #panel-jsoncsv textarea {
+          min-height:280px;
+          font-family:monospace;
+          font-size:14px;
+          line-height:1.6;
+        }
+        #panel-jsoncsv button:disabled {
+          opacity:.45;
+          cursor:not-allowed;
+        }
+        #panel-jsoncsv .jc-status {
+          padding:12px;
+          border-radius:10px;
+          background:#f5f7fb;
+          margin-top:16px;
+          overflow-wrap:anywhere;
+        }
+        @media(max-width:700px) {
+          #panel-jsoncsv .jc-grid {
+            grid-template-columns:1fr;
+          }
+        }
+      </style>
+
+      <div class="inline-note">
+        🔒 Private processing · No file upload to server
+      </div>
+
+      <div class="field" style="margin-top:18px">
+        <label for="jcv2File">Upload JSON or CSV file</label>
+        <input type="file" id="jcv2File"
+          accept=".json,.csv,.txt,application/json,text/csv">
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary" id="jcv2SampleJ">
+          JSON Sample
+        </button>
+        <button class="btn secondary" id="jcv2SampleC">
+          CSV Sample
+        </button>
+        <button class="btn secondary" id="jcv2Clear">
+          Clear All
+        </button>
+      </div>
+
+      <div class="jc-grid">
+        <div class="field">
+          <label for="jcv2Input">Input Data</label>
+          <textarea id="jcv2Input"
+            spellcheck="false"
+            placeholder="Paste JSON or CSV data here..."></textarea>
+          <small id="jcv2Detect">Detected format: —</small>
+        </div>
+        <div class="field">
+          <label for="jcv2Output">Converted Result</label>
+          <textarea id="jcv2Output" readonly
+            spellcheck="false"
+            placeholder="Your result will appear here..."></textarea>
+          <small id="jcv2Info">No result yet</small>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="jcv2Auto">
+          ⚡ Auto Convert
+        </button>
+        <button class="btn" id="jcv2ToCsv">
+          JSON to CSV
+        </button>
+        <button class="btn teal" id="jcv2ToJson">
+          CSV to JSON
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary" id="jcv2Validate">
+          Validate JSON
+        </button>
+        <button class="btn secondary" id="jcv2Format">
+          Beautify JSON
+        </button>
+        <button class="btn secondary" id="jcv2Minify">
+          Minify JSON
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary" id="jcv2Copy" disabled>
+          Copy Result
+        </button>
+        <button class="btn teal" id="jcv2Download" disabled>
+          Download Result
+        </button>
+      </div>
+
+      <div class="jc-status" id="jcv2Status"
+        role="status" aria-live="polite">
+        Enter or select a file to get started.
+      </div>
+
+      <p class="notice">
+        CSV values are imported as strings. Nested JSON values
+        are exported as JSON text. Use caution when opening
+        untrusted CSV data in spreadsheet applications.
+        Maximum input size: 5 MB.
+      </p>
+    `;
+
+    const $ = id => document.getElementById("jcv2" + id);
+    const input = $("Input");
+    const output = $("Output");
+    const limit = 5 * 1024 * 1024;
+
+    let resultType = "";
+    let revision = 0;
+
+    function status(message, error = false) {
+      $("Status").textContent = message;
+      $("Status").style.color = error ? "#b42318" : "#067647";
+      $("Status").style.background =
+        error ? "#fff1f0" : "#ecfdf3";
+    }
+
+    function resetResult() {
+      output.value = "";
+      resultType = "";
+      $("Info").textContent = "No result yet";
+      $("Copy").disabled = true;
+      $("Download").disabled = true;
+    }
+
+    function clean(text) {
+      return text.replace(/^\uFEFF/, "");
+    }
+
+    function detect(text) {
+      const value = clean(text).trim();
+      if (!value) return "";
+      try {
+        JSON.parse(value);
+        return "JSON";
+      } catch (_) {
+        if (/^[{\[]/.test(value)) return "Invalid JSON";
+        return "CSV";
+      }
+    }
+
+    function refresh() {
+      revision++;
+      resetResult();
+      $("Detect").textContent =
+        "Detected format: " + (detect(input.value) || "—");
+      status("Ready to convert.");
+    }
+
+    function readInput() {
+      const text = clean(input.value);
+      if (!text.trim()) throw Error("Please enter some data.");
+      if (new Blob([text]).size > limit)
+        throw Error("Input exceeds the 5 MB limit.");
+      return text;
+    }
+
+    function parseCSV(text) {
+      text = clean(text);
+      const rows = [];
+      let row = [], cell = "";
+      let state = 0, touched = false;
+
+      function endCell() {
+        row.push(cell);
+        cell = "";
+        state = 0;
+      }
+
+      function endRow() {
+        if (touched || row.length || cell.trim()) {
+          endCell();
+          rows.push(row);
+        }
+        row = [];
+        cell = "";
+        state = 0;
+        touched = false;
+      }
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+
+        if (state === 1) {
+          if (c === '"') {
+            if (text[i + 1] === '"') {
+              cell += '"';
+              i++;
+            } else {
+              state = 2;
+            }
+          } else {
+            cell += c;
+          }
+          continue;
+        }
+
+        if (c === "\r" || c === "\n") {
+          if (c === "\r" && text[i + 1] === "\n") i++;
+          endRow();
+          continue;
+        }
+
+        if (c === ",") {
+          touched = true;
+          endCell();
+          continue;
+        }
+
+        if (state === 2) {
+          throw Error("Unexpected text after a quoted CSV field.");
+        }
+
+        if (c === '"') {
+          if (cell.length)
+            throw Error("Unexpected quote in CSV field.");
+          state = 1;
+          touched = true;
+        } else {
+          cell += c;
+        }
+      }
+
+      if (state === 1)
+        throw Error("CSV contains an unclosed quoted field.");
+
+      endRow();
+      return rows;
+    }
+
+    function csvCell(value) {
+      const text = value == null ? "" :
+        typeof value === "object" ?
+        JSON.stringify(value) : String(value);
+
+      return text === "" || /[",\r\n]/.test(text)
+        ? '"' + text.replace(/"/g, '""') + '"'
+        : text;
+    }
+
+    function showResult(value, type, message) {
+      output.value = value;
+      resultType = type;
+      $("Info").textContent =
+        type.toUpperCase() + " · " +
+        new Blob([value]).size.toLocaleString() + " bytes";
+      $("Copy").disabled = false;
+      $("Download").disabled = false;
+      status(message);
+    }
+
+    function convert(mode) {
+      resetResult();
+
+      try {
+        const text = readInput();
+
+        if (mode === "auto") {
+          const format = detect(text);
+          if (format === "Invalid JSON")
+            throw Error("Invalid JSON. Check your syntax.");
+          mode = format === "JSON" ? "csv" : "json";
+        }
+
+        if (mode === "csv") {
+          const data = JSON.parse(text);
+
+          if (!Array.isArray(data) || !data.length ||
+              !data.every(item => item !== null &&
+                typeof item === "object" &&
+                !Array.isArray(item))) {
+            throw Error("Use a non-empty JSON array of objects.");
+          }
+
+          const keys = [...new Set(
+            data.flatMap(item => Object.keys(item))
+          )];
+
+          if (!keys.length || keys.some(k => !k.trim()))
+            throw Error("JSON must contain non-empty field names.");
+
+          const lines = [
+            keys.map(csvCell).join(","),
+            ...data.map(item => keys.map(key =>
+              csvCell(
+                Object.prototype.hasOwnProperty.call(item, key)
+                ? item[key] : ""
+              )
+            ).join(","))
+          ];
+
+          showResult(
+            lines.join("\r\n"),
+            "csv",
+            "Successfully converted " + data.length + " rows."
+          );
+
+        } else if (mode === "json") {
+          const rows = parseCSV(text);
+
+          if (!rows.length)
+            throw Error("CSV must contain a header row.");
+
+          const headers = rows.shift();
+
+          if (headers.some(h => !h.trim()))
+            throw Error("CSV contains an empty column name.");
+
+          if (new Set(headers).size !== headers.length)
+            throw Error("CSV contains duplicate column names.");
+
+          const data = rows.map((row, index) => {
+            if (row.length !== headers.length)
+              throw Error(
+                "Data row " + (index + 1) +
+                " has an incorrect number of columns."
+              );
+
+            return Object.fromEntries(
+              headers.map((key, i) => [key, row[i]])
+            );
+          });
+
+          showResult(
+            JSON.stringify(data, null, 2),
+            "json",
+            "Successfully converted " + data.length + " rows."
+          );
+
+        } else {
+          const data = JSON.parse(text);
+
+          if (mode === "validate") {
+            status("✓ Valid JSON. No syntax errors found.");
+            return;
+          }
+
+          showResult(
+            JSON.stringify(data, null, mode === "minify" ? 0 : 2),
+            "json",
+            mode === "minify" ?
+              "JSON successfully minified." :
+              "JSON successfully formatted."
+          );
+        }
+      } catch (error) {
+        resetResult();
+        status("Error: " + error.message, true);
+      }
+    }
+
+    input.addEventListener("input", refresh);
+
+    $("Auto").onclick = () => convert("auto");
+    $("ToCsv").onclick = () => convert("csv");
+    $("ToJson").onclick = () => convert("json");
+    $("Validate").onclick = () => convert("validate");
+    $("Format").onclick = () => convert("format");
+    $("Minify").onclick = () => convert("minify");
+
+    $("SampleJ").onclick = () => {
+      input.value = JSON.stringify([
+        {name:"Rahim", age:25, country:"Bangladesh"},
+        {name:"John", age:30, country:"USA"},
+        {name:"David", age:28, country:"Canada"}
+      ], null, 2);
+      refresh();
+    };
+
+    $("SampleC").onclick = () => {
+      input.value =
+        "product,price,quantity\n" +
+        "Keyboard,250,3\n" +
+        "Mouse,200,2\n" +
+        "Monitor,15000,1";
+      refresh();
+    };
+
+    $("Clear").onclick = () => {
+      input.value = "";
+      $("File").value = "";
+      refresh();
+      status("All data cleared.");
+    };
+
+    $("File").onchange = async () => {
+      const file = $("File").files[0];
+      if (!file) return;
+
+      const request = ++revision;
+      resetResult();
+
+      try {
+        if (file.size > limit)
+          throw Error("Maximum file size is 5 MB.");
+
+        const text = await file.text();
+        if (request !== revision) return;
+
+        input.value = clean(text);
+        refresh();
+        status("File loaded: " + file.name);
+      } catch (error) {
+        if (request === revision)
+          status(error.message, true);
+      }
+    };
+
+    $("Copy").onclick = async () => {
+      if (!resultType) return;
+      try {
+        await navigator.clipboard.writeText(output.value);
+        status("Result copied to clipboard.");
+      } catch (_) {
+        output.focus();
+        output.select();
+        status("Please copy the selected text manually.");
+      }
+    };
+
+    $("Download").onclick = () => {
+      if (!resultType) return;
+
+      const blob = new Blob([output.value], {
+        type: resultType === "json" ?
+          "application/json;charset=utf-8" :
+          "text/csv;charset=utf-8"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "alltoolzone-converted." + resultType;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      status("Download requested.");
+    };
+  }
+
+  if (document.readyState === "complete") {
+    initConverterV2();
+  } else {
+    window.addEventListener("load", initConverterV2, {
+      once: true
+    });
+  }
+})();
+</script>
 </body>
 </html>
