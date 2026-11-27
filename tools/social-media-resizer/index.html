@@ -1,1 +1,435 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Resize images to common Instagram, story, reel, link preview and YouTube thumbnail dimensions."><meta name="robots" content="index,follow"><link rel="canonical" href="https://mzcrussell.github.io/megatools/tools/social-media-resizer/"><meta property="og:title" content="Social Media Image Resizer | QuickTools Hub"><meta property="og:description" content="Resize images to common Instagram, story, reel, link preview and YouTube thumbnail dimensions."><title>Social Media Image Resizer | QuickTools Hub</title><style>body{font:16px/1.7 system-ui,sans-serif;margin:0;background:#f5f7fb;color:#172033}main{max-width:820px;margin:50px auto;padding:28px;background:white;border:1px solid #e6eaf0;border-radius:18px}h1{line-height:1.2}a.btn{display:inline-block;background:#6258e8;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700}h2{margin-top:28px}.muted{color:#667085}footer{margin-top:36px;color:#667085;font-size:14px}</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Social Media Image Resizer","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script></head><body><main><p class="muted"><a href="../../">QuickTools Hub</a> / Tools</p><h1>Social Media Image Resizer</h1><p>Resize images to common Instagram, story, reel, link preview and YouTube thumbnail dimensions.</p><p>Upload an image, choose a preset, select Fill/Crop or Fit/Padding, and download a PNG. Check current platform guidelines before publishing.</p><p><a class="btn" href="../../#tool=socialsize">Open the free tool</a></p><h2>Frequently asked questions</h2><h3>Does it support custom sizes?</h3><p>The current release includes common presets.</p><h3>Will it crop my image?</h3><p>Choose Fill/Crop or Fit/Padding.</p><h3>Which output format?</h3><p>PNG.</p><footer>Free browser-based utility from QuickTools Hub. <a href="../../">Explore all tools</a>.</footer></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Free Social Media Image Resizer | AllToolZone</title>
+<meta name="description" content="Resize images for Instagram, Facebook, YouTube and other social media platforms. Choose popular image presets, crop or fit your photos and download PNG images for free.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://alltoolzone.com/tools/social-media-resizer/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Social Media Image Resizer | AllToolZone">
+<meta property="og:description" content="Resize photos for social media posts, stories, thumbnails and link previews with our free browser-based image resizer.">
+<meta property="og:url" content="https://alltoolzone.com/tools/social-media-resizer/">
+<meta property="og:site_name" content="AllToolZone">
+<meta name="twitter:card" content="summary">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AllToolZone Social Media Image Resizer",
+  "url": "https://alltoolzone.com/tools/social-media-resizer/",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "description": "A free browser-based tool for resizing images using popular social media presets, with crop and padding options and PNG downloads.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AllToolZone",
+    "url": "https://alltoolzone.com/"
+  }
+}
+</script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#f5f7fb;
+  color:#172033;
+  font:16px/1.7 system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+header{
+  background:#fff;
+  border-bottom:1px solid #e6eaf0;
+  padding:18px;
+}
+nav{
+  max-width:960px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+.brand{
+  color:#5146d4;
+  font-size:23px;
+  font-weight:800;
+  text-decoration:none;
+}
+nav a{color:#344054;text-decoration:none;font-weight:600}
+main{max-width:960px;margin:28px auto;padding:0 16px}
+.card{
+  background:white;
+  border:1px solid #e6eaf0;
+  border-radius:18px;
+  padding:28px;
+  margin-bottom:20px;
+}
+.hero{
+  text-align:center;
+  background:linear-gradient(135deg,#fff,#eeedff);
+  padding:48px 28px;
+}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:18px 0}
+h2{font-size:24px;line-height:1.35;margin:0 0 20px}
+h3{font-size:18px;margin:0 0 10px}
+.btn{
+  display:inline-block;
+  background:#6258e8;
+  color:white;
+  padding:14px 24px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:750;
+}
+.btn:hover{background:#5146d4}
+a:focus-visible,summary:focus-visible{
+  outline:3px solid #6258e8;
+  outline-offset:4px;
+}
+.muted{color:#667085;font-size:14px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.feature{
+  background:#f6f7fd;
+  padding:18px;
+  border-radius:12px;
+}
+.note{
+  background:#f2f5f9;
+  padding:16px;
+  border-radius:12px;
+}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{
+  text-align:left;
+  padding:12px;
+  border-bottom:1px solid #e6eaf0;
+}
+th{background:#eeedff}
+details{padding:14px 0;border-bottom:1px solid #e6eaf0}
+summary{cursor:pointer;font-weight:700}
+.related a{
+  display:block;
+  padding:14px;
+  background:#f6f7fd;
+  border-radius:10px;
+  color:#5146d4;
+  font-weight:650;
+  text-decoration:none;
+}
+.center{text-align:center}
+footer{
+  background:#111a2d;
+  color:white;
+  padding:30px 16px;
+  text-align:center;
+}
+footer a{color:#d9d6ff}
+@media(max-width:650px){
+  .grid{grid-template-columns:1fr}
+  .card{padding:20px}
+  .hero{padding:32px 20px}
+  h2{font-size:21px}
+  th,td{padding:9px;font-size:14px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+<a class="brand" href="../../">AllToolZone</a>
+<a href="../../">All Tools</a>
+</nav>
+</header>
+
+<main>
+
+<section class="card hero">
+<p class="muted">FREE ONLINE IMAGE TOOL</p>
+<h1>Free Social Media Image Resizer</h1>
+
+<p>Resize your photos for social media posts, stories, reels, thumbnails and link previews. Choose popular image presets, adjust the image layout and download your resized image as a PNG.</p>
+
+<a class="btn" href="../../#tool=socialsize">
+Resize Your Image Now
+</a>
+
+<p class="muted">Free to use · Browser-based · No account required</p>
+</section>
+
+<section class="card">
+<h2>Why Use AllToolZone Social Media Resizer?</h2>
+
+<div class="grid">
+
+<div class="feature">
+<h3>Popular Image Presets</h3>
+<p>Prepare images for common social media posts, stories and video thumbnails.</p>
+</div>
+
+<div class="feature">
+<h3>Easy Image Resizing</h3>
+<p>Resize photos without complicated image editing software or advanced design skills.</p>
+</div>
+
+<div class="feature">
+<h3>Private Processing</h3>
+<p>The image resizer is designed to process images locally in your browser.</p>
+</div>
+
+<div class="feature">
+<h3>Crop or Fit</h3>
+<p>Choose whether to fill the selected dimensions or preserve the entire original image with padding.</p>
+</div>
+
+<div class="feature">
+<h3>Free PNG Download</h3>
+<p>Save your resized image in PNG format for use in your social media projects.</p>
+</div>
+
+<div class="feature">
+<h3>Desktop and Mobile</h3>
+<p>Access the image resizer from a modern browser on your computer, tablet or smartphone.</p>
+</div>
+
+</div>
+</section>
+
+<section class="card">
+<h2>How to Resize Images for Social Media</h2>
+
+<ol>
+<li>Click the Resize Your Image Now button.</li>
+<li>Upload an image from your device.</li>
+<li>Select an available social media size preset.</li>
+<li>Choose Fill/Crop or Fit/Padding.</li>
+<li>Review the resized image.</li>
+<li>Download the finished PNG image.</li>
+</ol>
+
+<p class="note">For better results, start with a high-resolution image and keep important text, faces and logos away from the edges.</p>
+</section>
+
+<section class="card">
+<h2>Common Social Media Image Sizes</h2>
+
+<p>Use the following dimensions as a starting point when preparing social media graphics.</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Image Type</th>
+<th>Dimensions</th>
+<th>Aspect Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram Square Post</td>
+<td>1080 × 1080 px</td>
+<td>1:1</td>
+</tr>
+<tr>
+<td>Instagram Portrait Post</td>
+<td>1080 × 1350 px</td>
+<td>4:5</td>
+</tr>
+<tr>
+<td>Instagram Story</td>
+<td>1080 × 1920 px</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>Instagram Reel Graphic</td>
+<td>1080 × 1920 px</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>Facebook Link Preview</td>
+<td>1200 × 630 px</td>
+<td>Approx. 1.91:1</td>
+</tr>
+<tr>
+<td>YouTube Thumbnail</td>
+<td>1280 × 720 px</td>
+<td>16:9</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p class="muted">These are common reference dimensions, not a complete list of available tool presets. Platform requirements and recommendations may change. Check the relevant platform guidelines before publishing.</p>
+</section>
+
+<section class="card">
+<h2>Fill/Crop vs. Fit/Padding</h2>
+
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+
+<div class="feature">
+<h3>Fill / Crop</h3>
+<svg viewBox="0 0 240 140" width="100%" role="img" aria-label="Illustration of an image cropped to fill a square">
+<defs>
+<clipPath id="cropBox">
+<rect x="65" y="10" width="110" height="110" rx="5"/>
+</clipPath>
+</defs>
+<rect x="65" y="10" width="110" height="110" rx="5" fill="#dce7ff"/>
+<g clip-path="url(#cropBox)">
+<circle cx="145" cy="38" r="14" fill="#f5bd54"/>
+<path d="M0 120 L70 45 L130 110 L190 55 L240 120Z" fill="#7c9cc9"/>
+<path d="M0 120 L65 80 L110 120 L175 70 L240 120Z" fill="#4e8b81"/>
+</g>
+<rect x="65" y="10" width="110" height="110" rx="5" fill="none" stroke="#6258e8" stroke-width="2"/>
+</svg>
+<p>Fills the entire target area while maintaining the image's proportions. Some parts of the original image may be cropped.</p>
+</div>
+
+<div class="feature">
+<h3>Fit / Padding</h3>
+<svg viewBox="0 0 240 140" width="100%" role="img" aria-label="Illustration of an entire landscape image fitted inside a square with padding">
+<rect x="65" y="10" width="110" height="110" rx="5" fill="#e3e5ed" stroke="#6258e8" stroke-width="2"/>
+<rect x="66" y="34" width="108" height="62" fill="#dce7ff"/>
+<circle cx="149" cy="47" r="9" fill="#f5bd54"/>
+<path d="M66 96 L96 48 L128 87 L151 58 L174 96Z" fill="#7c9cc9"/>
+<path d="M66 96 L100 73 L125 96 L150 79 L174 96Z" fill="#4e8b81"/>
+</svg>
+<p>Preserves the complete original image within the target dimensions. Extra space may appear around the image as padding.</p>
+</div>
+
+</div>
+</section>
+
+<section class="card">
+<h2>Who Can Use This Image Resizer?</h2>
+
+<div class="grid">
+
+<div class="feature">
+<h3>Content Creators</h3>
+<p>Prepare graphics, thumbnails and promotional images for your social media channels.</p>
+</div>
+
+<div class="feature">
+<h3>Small Businesses</h3>
+<p>Resize product photos, marketing graphics and promotional announcements.</p>
+</div>
+
+<div class="feature">
+<h3>Social Media Managers</h3>
+<p>Adapt visual content to different post formats and aspect ratios.</p>
+</div>
+
+</div>
+</section>
+
+<section class="card">
+<h2>Tips for Better Social Media Images</h2>
+
+<ul>
+<li>Use clear, high-resolution source images.</li>
+<li>Keep important text and logos within safe margins.</li>
+<li>Avoid stretching images out of proportion.</li>
+<li>Use Fit/Padding when the entire image must remain visible.</li>
+<li>Use Fill/Crop when an edge-to-edge design is preferred.</li>
+<li>Review the final image before publishing.</li>
+</ul>
+
+<p>Resizing changes image dimensions but cannot restore missing details in a low-resolution photograph.</p>
+</section>
+
+<section class="card">
+<h2>Frequently Asked Questions</h2>
+
+<details>
+<summary>Is the social media image resizer free?</summary>
+<p>Yes. AllToolZone provides this image resizing utility for free without requiring an account.</p>
+</details>
+
+<details>
+<summary>Can I resize images for Instagram?</summary>
+<p>Yes. The tool includes common social media presets intended for formats such as Instagram posts and stories.</p>
+</details>
+
+<details>
+<summary>Can I create a YouTube thumbnail?</summary>
+<p>You can resize an existing image using the available thumbnail preset. The tool resizes images rather than creating complete thumbnail designs from scratch.</p>
+</details>
+
+<details>
+<summary>Will resizing crop my image?</summary>
+<p>Fill/Crop may remove parts of the image. Fit/Padding keeps the entire image visible within the selected dimensions.</p>
+</details>
+
+<details>
+<summary>What image format can I download?</summary>
+<p>The current version exports resized images in PNG format.</p>
+</details>
+
+<details>
+<summary>Does the tool support custom dimensions?</summary>
+<p>The current release focuses on common predefined image size presets.</p>
+</details>
+
+<details>
+<summary>Are my images uploaded to a server?</summary>
+<p>The resizing operation is designed to run locally in your browser without uploading the selected image to a processing server.</p>
+</details>
+
+<details>
+<summary>Can I use this tool on my smartphone?</summary>
+<p>Yes. You can access the tool using a compatible modern mobile browser. Available memory and browser capabilities may affect very large images.</p>
+</details>
+
+</section>
+
+<section class="card">
+<h2>Explore More Free Online Tools</h2>
+
+<div class="grid related">
+<a href="../background-eraser/">AI Background Remover</a>
+<a href="../heic-to-jpg/">HEIC to JPG Converter</a>
+<a href="../pdf-toolkit/">PDF Toolkit</a>
+<a href="../resume-builder/">Resume Builder</a>
+<a href="../barcode-generator/">Barcode Generator</a>
+<a href="../../">Explore All Tools</a>
+</div>
+</section>
+
+<section class="card center">
+<h2>Ready to Resize Your Images?</h2>
+<p>Prepare your next social media image with AllToolZone's free online image resizer.</p>
+<a class="btn" href="../../#tool=socialsize">
+Open Free Image Resizer
+</a>
+</section>
+
+</main>
+
+<footer>
+<strong>AllToolZone</strong>
+<p>All Your Tools. One Smart Place.</p>
+<p><a href="../../">Home &amp; All Tools</a></p>
+<p>© 2026 AllToolZone</p>
+</footer>
+
+</body>
+</html>
